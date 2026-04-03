@@ -1,5 +1,5 @@
 {
-    "name": "swiftphp/core",
+    "name": "itaotao/swiftphp-core",
     "description": "SwiftPHP Framework - ThinkPHP ease of use + Workerman high performance",
     "type": "library",
     "license": "MIT",
