@@ -1,0 +1,30 @@
+{
+    "name": "swiftphp/core",
+    "description": "SwiftPHP Framework - ThinkPHP ease of use + Workerman high performance",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "swiftphp",
+        "framework",
+        "thinkphp",
+        "workerman"
+    ],
+    "authors": [
+        {
+            "name": "itaotao",
+            "email": "mrjiabin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "workerman/workerman": "^4.1",
+        "symfony/http-foundation": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SwiftPHP\\": ""
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

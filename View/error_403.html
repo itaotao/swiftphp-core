@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>没有访问权限 · 403</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .title {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #9b59b6;
+            line-height: 1;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #8e44ad;
+            margin-bottom: 1rem;
+        }
+
+        .desc {
+            color: #7f8c8d;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #9b59b6;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #9b59b6;
+            border: 1px solid #9b59b6;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(155, 89, 182, 0.1);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #9b59b6;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">403</div>
+        <div class="subtitle">没有访问权限</div>
+        <div class="desc">
+            抱歉，您没有权限访问这个页面。<br>
+            如果您认为这是错误的，请联系网站管理员。
+        </div>
+        <div class="btn-group">
+            <a href="javascript:history.back()" class="btn btn-secondary">返回上一页</a>
+            <a href="/" class="btn btn-primary">返回首页</a>
+        </div>
+    </div>
+    <div class="footer">
+        Powered by <a href="https://swiftphp.com">SwiftPHP</a> Framework
+    </div>
+</body>
+</html>

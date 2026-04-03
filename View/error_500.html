@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器开小差了 · 500</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .title {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #e74c3c;
+            line-height: 1;
+            margin-bottom: 1rem;
+            animation: shake 2s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-5px) rotate(-2deg); }
+            50% { transform: translateX(0) rotate(0deg); }
+            75% { transform: translateX(5px) rotate(2deg); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #c0392b;
+            margin-bottom: 1rem;
+        }
+
+        .desc {
+            color: #7f8c8d;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 调试信息样式 */
+        .debug-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 11px;
+            max-width: 100%;
+            overflow-x: auto;
+            box-sizing: border-box;
+            word-wrap: break-word;
+        }
+
+        .debug-info h3 {
+            margin-bottom: 1rem;
+            color: #e74c3c;
+            font-size: 14px;
+        }
+
+        .debug-info p {
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+            line-height: 1.3;
+        }
+
+        .debug-info pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 0.8rem;
+            border-radius: 4px;
+            margin: 0.8rem 0;
+            overflow-x: auto;
+            font-size: 10px;
+            line-height: 1.3;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* 响应式样式 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .title {
+                font-size: 5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 14px;
+            }
+
+            .debug-info {
+                padding: 0.8rem;
+                font-size: 10px;
+            }
+
+            .debug-info h3 {
+                font-size: 12px;
+            }
+
+            .debug-info pre {
+                padding: 0.6rem;
+                font-size: 9px;
+            }
+
+            .footer {
+                font-size: 12px;
+                bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">500</div>
+        <div class="subtitle">服务器开小差了</div>
+        <div class="desc">
+            抱歉，服务器遇到了一个意外情况，无法完成您的请求。<br>
+            这通常不是您的原因，请稍后重试。
+        </div>
+        <div class="btn-group">
+            <a href="javascript:history.back()" class="btn btn-secondary">返回上一页</a>
+            <a href="/" class="btn btn-primary">返回首页</a>
+        </div>
+        <?php if ($debug && $e): ?>
+        <div class="debug-info">
+            <h3>调试信息</h3>
+            <p><strong>错误类型:</strong> <?php echo $errorClass; ?></p>
+            <p><strong>错误信息:</strong> <?php echo htmlspecialchars($message); ?></p>
+            <p><strong>错误位置:</strong> <?php echo $errorFile; ?>:<?php echo $errorLine; ?></p>
+            <p><strong>调用栈:</strong></p>
+            <pre>
+                <?php echo $traceHtml; ?>
+            </pre>
+        </div>
+        <?php endif; ?>
+    </div>
+    <div class="footer">
+        Powered by <a href="https://swiftphp.com">SwiftPHP</a> Framework
+    </div>
+</body>
+</html>

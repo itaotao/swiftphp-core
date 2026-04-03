@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面找不到了 · 404</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .title {
+            font-size: 8rem;
+            font-weight: 900;
+            color: #4a6cf7;
+            line-height: 1;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .desc {
+            color: #777;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #4a6cf7;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #3a5ce7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #4a6cf7;
+            border: 1px solid #4a6cf7;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4ff;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #4a6cf7;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">404</div>
+        <div class="subtitle">页面不见了</div>
+        <div class="desc">
+            你访问的页面可能已被移动、删除或从未存在。<br>
+            请检查链接是否正确，或返回首页继续浏览。
+        </div>
+        <div class="btn-group">
+            <a href="javascript:history.back()" class="btn btn-secondary">返回上一页</a>
+            <a href="/" class="btn btn-primary">返回首页</a>
+        </div>
+    </div>
+    <div class="footer">
+        Powered by <a href="https://swiftphp.com">SwiftPHP</a> Framework
+    </div>
+</body>
+</html>
