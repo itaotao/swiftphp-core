@@ -18,23 +18,6 @@ abstract class BaseCommand extends Command
         $this->basePath = $basePath;
     }
 
-    protected function configure()
-    {
-        $this->addArgument('name', InputArgument::REQUIRED, 'The name of the class');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new SymfonyStyle($input, $output);
-        $name = $input->getArgument('name');
-
-        if ($this->validateName($name, $io)) {
-            return Command::FAILURE;
-        }
-
-        return Command::SUCCESS;
-    }
-
     protected function validateName(string $name, SymfonyStyle $io): int
     {
         if (empty($name)) {

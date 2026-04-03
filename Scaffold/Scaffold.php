@@ -54,7 +54,9 @@ class Scaffold
         }
 
         try {
-            $this->app->run(null, $args);
+            $input = new \Symfony\Component\Console\Input\ArgvInput($args);
+            $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $this->app->run($input, $output);
         } catch (\Exception $e) {
             echo "Error: " . $e->getMessage() . "\n";
             exit(1);
