@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Auth;
+namespace SwiftPHP\Auth;
 
 use Exception;
 

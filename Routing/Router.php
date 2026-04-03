@@ -1,12 +1,12 @@
 <?php
 
-namespace SwiftPHP\Core\Routing;
+namespace SwiftPHP\Routing;
 
-use SwiftPHP\Core\Exception\Handler;
-use SwiftPHP\Core\Exception\HttpException;
-use SwiftPHP\Core\Middleware\Middleware;
-use SwiftPHP\Core\Request\Request;
-use SwiftPHP\Core\Response\Response;
+use SwiftPHP\Exception\Handler;
+use SwiftPHP\Exception\HttpException;
+use SwiftPHP\Middleware\Middleware;
+use SwiftPHP\Request\Request;
+use SwiftPHP\Response\Response;
 
 class Router
 {
@@ -27,7 +27,7 @@ class Router
             // 处理 App\Controller 命名空间
             if (strpos($class, 'App\\Controller\\') === 0) {
                 $classPath = str_replace('App\\Controller\\', '', $class);
-                $filePath = dirname(__DIR__, 2) . '/app/controller/' . str_replace('\\', '/', $classPath) . '.php';
+                $filePath = \SwiftPHP\Path\Path::getRootPath() . '/app/controller/' . str_replace('\\', '/', $classPath) . '.php';
                 if (file_exists($filePath)) {
                     require_once $filePath;
                     return true;
@@ -39,7 +39,7 @@ class Router
 
     protected function loadRoutes(): void
     {
-        $routeConfigFile = dirname(__DIR__, 2) . '/config/route.php';
+        $routeConfigFile = \SwiftPHP\Path\Path::getRootPath() . '/config/route.php';
         if (file_exists($routeConfigFile)) {
             $routes = include $routeConfigFile;
             foreach ($routes as $pattern => $handler) {
@@ -50,7 +50,7 @@ class Router
 
     protected function loadMiddleware(): void
     {
-        $middlewareFile = dirname(__DIR__, 2) . '/config/middleware.php';
+        $middlewareFile = \SwiftPHP\Path\Path::getRootPath() . '/config/middleware.php';
         if (file_exists($middlewareFile)) {
             $this->middlewareGroups = include $middlewareFile;
         }

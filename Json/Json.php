@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Json;
+namespace SwiftPHP\Json;
 
 class Json
 {
@@ -23,7 +23,7 @@ class Json
         self::$debug = $debug;
     }
 
-    public static function success($data = [], string $msg = 'success', int $code = self::CODE_SUCCESS): \SwiftPHP\Core\Response\Response
+    public static function success($data = [], string $msg = 'success', int $code = self::CODE_SUCCESS): \SwiftPHP\Response\Response
     {
         $response = [
             'code' => $code,
@@ -35,20 +35,20 @@ class Json
             $response['debug'] = self::$debugData;
         }
 
-        return \SwiftPHP\Core\Response\Response::json($response, $code);
+        return \SwiftPHP\Response\Response::json($response, $code);
     }
 
-    public static function created($data = [], string $msg = 'Created'): \SwiftPHP\Core\Response\Response
+    public static function created($data = [], string $msg = 'Created'): \SwiftPHP\Response\Response
     {
         return self::success($data, $msg, self::CODE_CREATED);
     }
 
-    public static function noContent(string $msg = 'No Content'): \SwiftPHP\Core\Response\Response
+    public static function noContent(string $msg = 'No Content'): \SwiftPHP\Response\Response
     {
         return self::success([], $msg, self::CODE_NO_CONTENT);
     }
 
-    public static function error(string $msg = 'Error', int $code = self::CODE_BAD_REQUEST, $errors = null): \SwiftPHP\Core\Response\Response
+    public static function error(string $msg = 'Error', int $code = self::CODE_BAD_REQUEST, $errors = null): \SwiftPHP\Response\Response
     {
         $response = [
             'code' => $code,
@@ -63,40 +63,40 @@ class Json
             $response['debug'] = self::$debugData;
         }
 
-        return \SwiftPHP\Core\Response\Response::json($response, $code);
+        return \SwiftPHP\Response\Response::json($response, $code);
     }
 
-    public static function unauthorized(string $msg = 'Unauthorized'): \SwiftPHP\Core\Response\Response
+    public static function unauthorized(string $msg = 'Unauthorized'): \SwiftPHP\Response\Response
     {
         return self::error($msg, self::CODE_UNAUTHORIZED);
     }
 
-    public static function forbidden(string $msg = 'Forbidden'): \SwiftPHP\Core\Response\Response
+    public static function forbidden(string $msg = 'Forbidden'): \SwiftPHP\Response\Response
     {
         return self::error($msg, self::CODE_FORBIDDEN);
     }
 
-    public static function notFound(string $msg = 'Not Found'): \SwiftPHP\Core\Response\Response
+    public static function notFound(string $msg = 'Not Found'): \SwiftPHP\Response\Response
     {
         return self::error($msg, self::CODE_NOT_FOUND);
     }
 
-    public static function validationError($errors, string $msg = 'Validation Error'): \SwiftPHP\Core\Response\Response
+    public static function validationError($errors, string $msg = 'Validation Error'): \SwiftPHP\Response\Response
     {
         return self::error($msg, self::CODE_VALIDATION_ERROR, $errors);
     }
 
-    public static function serverError(string $msg = 'Internal Server Error'): \SwiftPHP\Core\Response\Response
+    public static function serverError(string $msg = 'Internal Server Error'): \SwiftPHP\Response\Response
     {
         return self::error($msg, self::CODE_SERVER_ERROR);
     }
 
-    public static function paginate(\SwiftPHP\Core\Paginate\Paginate $paginator, string $msg = 'success'): \SwiftPHP\Core\Response\Response
+    public static function paginate(\SwiftPHP\Paginate\Paginate $paginator, string $msg = 'success'): \SwiftPHP\Response\Response
     {
         return self::success($paginator->toArray(), $msg);
     }
 
-    public static function list($data, string $msg = 'success'): \SwiftPHP\Core\Response\Response
+    public static function list($data, string $msg = 'success'): \SwiftPHP\Response\Response
     {
         return self::success([
             'list' => $data,
@@ -131,7 +131,7 @@ class Json
         self::$debugData = [];
     }
 
-    public static function code(int $code): \SwiftPHP\Core\Response\Response
+    public static function code(int $code): \SwiftPHP\Response\Response
     {
         return self::error(self::getCodeMessage($code), $code);
     }

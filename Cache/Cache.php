@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Cache;
+namespace SwiftPHP\Cache;
 
 class Cache
 {
@@ -17,7 +17,7 @@ class Cache
     public static function init(array $config = []): void
     {
         self::$driver = $config['driver'] ?? self::FILE;
-        self::$path = $config['path'] ?? dirname(__DIR__, 2) . '/runtime/cache';
+        self::$path = $config['path'] ?? \SwiftPHP\Path\Path::getRootPath() . '/runtime/cache';
         self::$prefix = $config['prefix'] ?? 'swift_';
         self::$expire = $config['expire'] ?? 0;
 
@@ -26,7 +26,7 @@ class Cache
         }
 
         if (self::$driver === self::REDIS && !empty($config['redis'])) {
-            \SwiftPHP\Core\Redis\Redis::init($config['redis']);
+            \SwiftPHP\Redis\Redis::init($config['redis']);
         }
     }
 
@@ -48,7 +48,7 @@ class Cache
         }
 
         if (self::$driver === self::REDIS) {
-            return \SwiftPHP\Core\Redis\Redis::get($key) ?? $default;
+            return \SwiftPHP\Redis\Redis::get($key) ?? $default;
         }
 
         $file = self::getCacheFile($key);
@@ -88,7 +88,7 @@ class Cache
         }
 
         if (self::$driver === self::REDIS) {
-            return \SwiftPHP\Core\Redis\Redis::set($key, $value, $ttl);
+            return \SwiftPHP\Redis\Redis::set($key, $value, $ttl);
         }
 
         $file = self::getCacheFile($key);
@@ -118,7 +118,7 @@ class Cache
         }
 
         if (self::$driver === self::REDIS) {
-            return \SwiftPHP\Core\Redis\Redis::delete($key) > 0;
+            return \SwiftPHP\Redis\Redis::delete($key) > 0;
         }
 
         $file = self::getCacheFile($key);
@@ -136,9 +136,9 @@ class Cache
         }
 
         if (self::$driver === self::REDIS) {
-            $keys = \SwiftPHP\Core\Redis\Redis::keys('*');
+            $keys = \SwiftPHP\Redis\Redis::keys('*');
             if (!empty($keys)) {
-                \SwiftPHP\Core\Redis\Redis::deleteMultiple($keys);
+                \SwiftPHP\Redis\Redis::deleteMultiple($keys);
             }
             return true;
         }

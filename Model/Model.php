@@ -1,12 +1,12 @@
 <?php
 
-namespace SwiftPHP\Core\Model;
+namespace SwiftPHP\Model;
 
-use SwiftPHP\Core\Database\ConnectionPool;
-use SwiftPHP\Core\Database\Builder\QueryBuilder;
-use SwiftPHP\Core\Model\Relation\HasOne;
-use SwiftPHP\Core\Model\Relation\HasMany;
-use SwiftPHP\Core\Model\Relation\BelongsTo;
+use SwiftPHP\Database\ConnectionPool;
+use SwiftPHP\Database\Builder\QueryBuilder;
+use SwiftPHP\Model\Relation\HasOne;
+use SwiftPHP\Model\Relation\HasMany;
+use SwiftPHP\Model\Relation\BelongsTo;
 use Exception;
 
 class Model
@@ -351,7 +351,7 @@ class Model
         }
 
         $tableName = static::convertToTableName(get_called_class());
-        $builder = \SwiftPHP\Core\Database\Builder\QueryBuilder::table($tableName);
+        $builder = \SwiftPHP\Database\Builder\QueryBuilder::table($tableName);
 
         if (method_exists($builder, $method)) {
             return call_user_func_array([$builder, $method], $args);

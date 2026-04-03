@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use SwiftPHP\Scaffold\Scaffold;
+
+$app = Scaffold::getInstance();
+$app->run($_SERVER['argv']);

@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Database\Builder;
+namespace SwiftPHP\Database\Builder;
 
 use PDO;
 use Exception;
@@ -35,7 +35,7 @@ class QueryBuilder
     {
         $config = config('database') ?: [];
         if (!empty($config)) {
-            \SwiftPHP\Core\Database\ConnectionPool::init($config);
+            \SwiftPHP\Database\ConnectionPool::init($config);
         }
     }
 
@@ -349,7 +349,7 @@ class QueryBuilder
     public function insertGetId(array $data): int
     {
         $this->insert($data);
-        return \SwiftPHP\Core\Database\ConnectionPool::lastInsertId();
+        return \SwiftPHP\Database\ConnectionPool::lastInsertId();
     }
 
     public function update(array $data): int
@@ -571,8 +571,8 @@ class QueryBuilder
     protected function prepare(string $sql)
     {
         $config = config('database') ?: [];
-        \SwiftPHP\Core\Database\ConnectionPool::init($config);
-        $pdo = \SwiftPHP\Core\Database\ConnectionPool::getConnection();
+        \SwiftPHP\Database\ConnectionPool::init($config);
+        $pdo = \SwiftPHP\Database\ConnectionPool::getConnection();
         return $pdo->prepare($sql);
     }
 

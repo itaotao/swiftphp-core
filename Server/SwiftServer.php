@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Server;
+namespace SwiftPHP\Server;
 
 use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
@@ -20,7 +20,8 @@ class SwiftServer
 
     protected function loadConfig(): void
     {
-        $configFile = dirname(__DIR__, 2) . '/config/server.php';
+        $rootPath = \SwiftPHP\Path\Path::getRootPath();
+        $configFile = $rootPath . '/config/server.php';
         if (file_exists($configFile)) {
             $this->config = include $configFile;
         }
@@ -63,7 +64,7 @@ class SwiftServer
 
         if ($this->hotReloadEnabled) {
             require_once __DIR__ . '/HotUpdate.php';
-            (new \SwiftPHP\Core\Server\HotUpdate())->register();
+            (new \SwiftPHP\Server\HotUpdate())->register();
         }
     }
 
@@ -73,43 +74,37 @@ class SwiftServer
 
     protected function initFramework(): void
     {
-        require_once dirname(__DIR__, 2) . '/app/common.php';
-        require_once dirname(__DIR__, 2) . '/core/Container/Container.php';
-        require_once dirname(__DIR__, 2) . '/core/Request/Request.php';
-        require_once dirname(__DIR__, 2) . '/core/Response/Response.php';
-        require_once dirname(__DIR__, 2) . '/core/Controller/Controller.php';
-        require_once dirname(__DIR__, 2) . '/core/Routing/Router.php';
-        require_once dirname(__DIR__, 2) . '/core/Exception/HttpException.php';
-        require_once dirname(__DIR__, 2) . '/core/Exception/Handler.php';
+        $rootPath = \SwiftPHP\Path\Path::getRootPath();
+        require_once $rootPath . '/app/common.php';
 
         $debug = ($this->config['app']['debug'] ?? false);
-        \SwiftPHP\Core\Exception\Handler::init($debug);
+        \SwiftPHP\Exception\Handler::init($debug);
     }
 
     public function handleRequest(TcpConnection $connection, $data): void
     {
         try {
-            // 初始化国际化
+            $rootPath = \SwiftPHP\Path\Path::getRootPath();
             $i18nConfig = [];
-            $configFile = dirname(__DIR__, 2) . '/config/i18n.php';
+            $configFile = $rootPath . '/config/i18n.php';
             if (file_exists($configFile)) {
                 $i18nConfig = include $configFile;
             }
-            \SwiftPHP\Core\I18n\I18n::init($i18nConfig);
+            \SwiftPHP\I18n\I18n::init($i18nConfig);
 
-            $request = new \SwiftPHP\Core\Request\Request($data);
+            $request = new \SwiftPHP\Request\Request($data);
 
             // 检测并设置语言
-            $detectedLocale = \SwiftPHP\Core\I18n\I18n::detectLocale($request->get(), $request->header() ?: []);
-            \SwiftPHP\Core\I18n\I18n::setLocale($detectedLocale);
+            $detectedLocale = \SwiftPHP\I18n\I18n::detectLocale($request->get(), $request->header() ?: []);
+            \SwiftPHP\I18n\I18n::setLocale($detectedLocale);
 
-            $router = new \SwiftPHP\Core\Routing\Router();
+            $router = new \SwiftPHP\Routing\Router();
             $response = $router->dispatch($request);
 
             $connection->send($response);
         } catch (\Throwable $e) {
-            $exception = \SwiftPHP\Core\Exception\Handler::render($e);
-            $errorResponse = new \SwiftPHP\Core\Response\Response(
+            $exception = \SwiftPHP\Exception\Handler::render($e);
+            $errorResponse = new \SwiftPHP\Response\Response(
                 $exception['status_code'],
                 ['Content-Type' => 'text/html; charset=utf-8'],
                 $exception['content']

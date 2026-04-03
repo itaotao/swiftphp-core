@@ -1,8 +1,8 @@
 <?php
 
-namespace SwiftPHP\Core\Validate;
+namespace SwiftPHP\Validate;
 
-use SwiftPHP\Core\Response\Response;
+use SwiftPHP\Response\Response;
 
 class Validate
 {

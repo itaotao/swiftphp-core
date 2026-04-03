@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Helper;
+namespace SwiftPHP\Helper;
 
 class Arr
 {

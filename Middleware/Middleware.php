@@ -1,9 +1,9 @@
 <?php
 
-namespace SwiftPHP\Core\Middleware;
+namespace SwiftPHP\Middleware;
 
-use SwiftPHP\Core\Request\Request;
-use SwiftPHP\Core\Response\Response;
+use SwiftPHP\Request\Request;
+use SwiftPHP\Response\Response;
 
 class Middleware
 {
@@ -65,7 +65,7 @@ class Middleware
 
     public static function loadGlobalMiddleware(): array
     {
-        $middlewareFile = dirname(__DIR__, 2) . '/config/middleware.php';
+        $middlewareFile = \SwiftPHP\Path\Path::getRootPath() . '/config/middleware.php';
         if (file_exists($middlewareFile)) {
             return include $middlewareFile;
         }

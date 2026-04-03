@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Url;
+namespace SwiftPHP\Url;
 
 class Url
 {

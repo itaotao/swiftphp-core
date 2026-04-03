@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Upload;
+namespace SwiftPHP\Upload;
 
 use Exception;
 
@@ -19,7 +19,7 @@ class Upload
             return;
         }
 
-        $this->savePath = $config['save_path'] ?? dirname(__DIR__, 2) . '/runtime/upload';
+        $this->savePath = $config['save_path'] ?? \SwiftPHP\Path\Path::getRootPath() . '/runtime/upload';
         $this->allowedTypes = $config['allowed_types'] ?? [];
         $this->maxSize = $config['max_size'] ?? 0;
 

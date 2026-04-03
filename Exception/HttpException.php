@@ -1,9 +1,9 @@
 <?php
 
-namespace SwiftPHP\Core\Exception;
+namespace SwiftPHP\Exception;
 
-use SwiftPHP\Core\Request\Request;
-use SwiftPHP\Core\Response\Response;
+use SwiftPHP\Request\Request;
+use SwiftPHP\Response\Response;
 
 class HttpException extends \Exception
 {

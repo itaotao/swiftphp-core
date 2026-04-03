@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Server;
+namespace SwiftPHP\Server;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -13,7 +13,7 @@ class HotUpdate
 
     public function __construct()
     {
-        $basePath = dirname(__DIR__, 2);
+        $basePath = \SwiftPHP\Path\Path::getRootPath();
         $this->watchDirs = [
             $basePath . '/app',
             $basePath . '/config',

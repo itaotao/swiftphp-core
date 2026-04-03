@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\I18n;
+namespace SwiftPHP\I18n;
 
 /**
  * 国际化（i18n）支持类
@@ -69,7 +69,7 @@ class I18n
             self::$langPath = rtrim($config['lang_path'], '/\\') . '/';
         } else {
             // 默认语言文件路径
-            self::$langPath = dirname(__DIR__, 2) . '/app/lang/';
+            self::$langPath = \SwiftPHP\Path\Path::getRootPath() . '/app/lang/';
         }
         if (isset($config['fallback'])) {
             self::$fallback = (bool) $config['fallback'];

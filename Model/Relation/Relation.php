@@ -1,9 +1,9 @@
 <?php
 
-namespace SwiftPHP\Core\Model\Relation;
+namespace SwiftPHP\Model\Relation;
 
-use SwiftPHP\Core\Model\Model;
-use SwiftPHP\Core\Database\Builder\QueryBuilder;
+use SwiftPHP\Model\Model;
+use SwiftPHP\Database\Builder\QueryBuilder;
 
 abstract class Relation
 {

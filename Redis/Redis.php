@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Redis;
+namespace SwiftPHP\Redis;
 
 use Exception;
 

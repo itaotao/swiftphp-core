@@ -1,9 +1,9 @@
 <?php
 
-namespace SwiftPHP\Core\Controller;
+namespace SwiftPHP\Controller;
 
-use SwiftPHP\Core\Request\Request;
-use SwiftPHP\Core\Response\Response;
+use SwiftPHP\Request\Request;
+use SwiftPHP\Response\Response;
 
 class Controller
 {
@@ -12,7 +12,7 @@ class Controller
 
     public function __construct()
     {
-        $this->viewPath = dirname(__DIR__, 2) . '/app/view/';
+        $this->viewPath = \SwiftPHP\Path\Path::getRootPath() . '/app/view/';
     }
 
     public function __invoke(Request $request): Response

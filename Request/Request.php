@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Request;
+namespace SwiftPHP\Request;
 
 use Workerman\Protocols\Http\Request as WorkermanRequest;
 

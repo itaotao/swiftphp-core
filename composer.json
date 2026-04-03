@@ -18,13 +18,39 @@
     "require": {
         "php": ">=7.4",
         "workerman/workerman": "^4.1",
-        "symfony/http-foundation": "^6.0"
+        "symfony/http-foundation": "^6.0",
+        "symfony/console": "^6.0"
     },
     "autoload": {
         "psr-4": {
-            "SwiftPHP\\": ""
+            "SwiftPHP\\Auth\\": "Auth/",
+            "SwiftPHP\\Cache\\": "Cache/",
+            "SwiftPHP\\Container\\": "Container/",
+            "SwiftPHP\\Controller\\": "Controller/",
+            "SwiftPHP\\Cookie\\": "Cookie/",
+            "SwiftPHP\\Database\\": "Database/",
+            "SwiftPHP\\Exception\\": "Exception/",
+            "SwiftPHP\\Helper\\": "Helper/",
+            "SwiftPHP\\I18n\\": "I18n/",
+            "SwiftPHP\\Json\\": "Json/",
+            "SwiftPHP\\Log\\": "Log/",
+            "SwiftPHP\\Middleware\\": "Middleware/",
+            "SwiftPHP\\Model\\": "Model/",
+            "SwiftPHP\\Paginate\\": "Paginate/",
+            "SwiftPHP\\Path\\": "Path/",
+            "SwiftPHP\\Redis\\": "Redis/",
+            "SwiftPHP\\Request\\": "Request/",
+            "SwiftPHP\\Response\\": "Response/",
+            "SwiftPHP\\Routing\\": "Routing/",
+            "SwiftPHP\\Scaffold\\": "Scaffold/",
+            "SwiftPHP\\Server\\": "Server/",
+            "SwiftPHP\\Session\\": "Session/",
+            "SwiftPHP\\Upload\\": "Upload/",
+            "SwiftPHP\\Url\\": "Url/",
+            "SwiftPHP\\Validate\\": "Validate/"
         }
     },
+    "bin": ["swiftphp.php"],
     "minimum-stability": "dev",
     "prefer-stable": true
 }

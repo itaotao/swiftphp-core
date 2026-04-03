@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Log;
+namespace SwiftPHP\Log;
 
 class Log
 {
@@ -23,7 +23,7 @@ class Log
 
     public static function init(array $config = []): void
     {
-        self::$logPath = $config['path'] ?? dirname(__DIR__, 2) . '/runtime/log';
+        self::$logPath = $config['path'] ?? \SwiftPHP\Path\Path::getRootPath() . '/runtime/log';
         self::$logLevel = $config['level'] ?? self::DEBUG;
         self::$single = $config['single'] ?? false;
         self::$singlePath = $config['single_path'] ?? '';

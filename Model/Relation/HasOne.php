@@ -1,8 +1,8 @@
 <?php
 
-namespace SwiftPHP\Core\Model\Relation;
+namespace SwiftPHP\Model\Relation;
 
-use SwiftPHP\Core\Model\Model;
+use SwiftPHP\Model\Model;
 
 class HasOne extends Relation
 {

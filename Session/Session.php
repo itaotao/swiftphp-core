@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Session;
+namespace SwiftPHP\Session;
 
 class Session
 {
@@ -29,7 +29,7 @@ class Session
         self::$lifetime = $config['lifetime'] ?? 120;
 
         if (self::$driver === 'file') {
-            self::$path = $config['path'] ?? dirname(__DIR__, 2) . '/runtime/session';
+            self::$path = $config['path'] ?? \SwiftPHP\Path\Path::getRootPath() . '/runtime/session';
             if (!is_dir(self::$path)) {
                 mkdir(self::$path, 0755, true);
             }

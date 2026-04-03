@@ -1,10 +1,10 @@
 <?php
 
-namespace SwiftPHP\Core\Exception;
+namespace SwiftPHP\Exception;
 
 use Exception;
 use Throwable;
-use SwiftPHP\Core\Request\Request;
+use SwiftPHP\Request\Request;
 
 class Handler
 {
@@ -27,7 +27,7 @@ class Handler
 
     protected static function loadCustomErrorPages(): void
     {
-        $errorConfigFile = dirname(__DIR__, 2) . '/config/error.php';
+        $errorConfigFile = \SwiftPHP\Path\Path::getRootPath() . '/config/error.php';
         if (file_exists($errorConfigFile)) {
             $config = include $errorConfigFile;
             self::$customErrorPages = $config['error_pages'] ?? [];
@@ -138,7 +138,7 @@ class Handler
             if (is_callable($customPage)) {
                 return call_user_func($customPage, $statusCode, $message, $e);
             }
-            $customPath = dirname(__DIR__, 2) . $customPage;
+            $customPath = \SwiftPHP\Path\Path::getRootPath() . $customPage;
             if (file_exists($customPath)) {
                 return self::includeCustomTemplate($customPath, $statusCode, $message, $e, $request);
             }
@@ -184,7 +184,7 @@ class Handler
 
     protected static function getStatusCode(Throwable $e): int
     {
-        if ($e instanceof HttpException) {
+        if ($e instanceof \SwiftPHP\Exception\HttpException) {
             return $e->getStatusCode();
         }
 
@@ -266,7 +266,7 @@ class Handler
 
     public static function abort(int $statusCode, string $message = ''): void
     {
-        throw new HttpException($statusCode, $message);
+        throw new \SwiftPHP\Exception\HttpException($statusCode, $message);
     }
 
     public static function badRequest(string $message = 'Bad Request'): void

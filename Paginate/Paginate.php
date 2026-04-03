@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Paginate;
+namespace SwiftPHP\Paginate;
 
 class Paginate
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace SwiftPHP\Core\Response;
+namespace SwiftPHP\Response;
 
 class Response
 {
