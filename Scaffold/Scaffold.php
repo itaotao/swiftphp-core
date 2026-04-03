@@ -19,8 +19,8 @@ class Scaffold
 
     private function __construct()
     {
-        $this->basePath = dirname(__DIR__, 2);
-        $this->app = new Application('SwiftPHP', '1.0.0');
+        $this->basePath = getcwd();
+        $this->app = new Application('SwiftPHP', '1.0.2');
         $this->registerCommands();
     }
 
