@@ -92,47 +92,34 @@ $server->start();
 
 3.  内存复用优化：框架启动时，一次性加载config目录、路由、核心类、全局辅助函数，请求处理时直接复用，避免ThinkPHP每次请求重新加载的损耗；同时支持配置“预加载文件”，开发者可自定义需要常驻内存的类/文件。
 
-## 2.2 路由模块（融合ThinkPHP易用性+Webman高效性）
+## 2.2 路由模块（配置式路由 + 自动路由）
 
-核心目标：支持ThinkPHP注解路由（降低学习成本），复用Webman路由解析逻辑（提升性能），同时兼容配置式路由。
+核心目标：支持配置式路由（route/route.php）和自动路由两种方式，兼顾灵活性和开发效率。
 
 #### 具体实现：
-1.  注解路由（优先支持，同ThinkPHP）：
-   - 封装注解解析类（core/Routing/Annotation.php），支持@Route、@Get、@Post等注解，语法与ThinkPHP完全一致；
-   - 示例（控制器）：
+
+**路由配置文件**：`route/route.php`
 
 ```php
 <?php
-namespace app\controller;
-use SwiftPHP\Core\Routing\Annotation\Route;
 
-class IndexController
-{
-    // 注解路由，同ThinkPHP写法
-    /**
-     * @Route("/index", method="get")
-     */
-    public function index()
-    {
-        return "Hello SwiftPHP";
-    }
-}
+use SwiftPHP\Routing\Router;
+
+$router = new Router();
+
+// 定义路由
+$router->get('/', 'IndexController@index');
+$router->get('/hello', 'IndexController@hello');
+
+return $router;
 ```
 
-2.  路由解析优化：
-   - 框架启动时，一次性解析所有控制器的注解路由，生成路由映射表，常驻内存；
-   - 复用Webman的路由匹配逻辑（哈希表匹配，O(1)复杂度），比ThinkPHP的路由解析更快；
-   - 支持路由参数、路由分组、中间件绑定，语法与ThinkPHP完全一致，开发者无感知切换。
+#### 支持的路由类型：
 
-3.  兼容配置式路由（config/route.php）：沿用ThinkPHP的路由配置语法，满足习惯配置式路由的开发者：
-
-```php
-// config/route.php
-return [
-    'GET /test' => 'app\controller\IndexController@test',
-    'POST /submit' => 'app\controller\FormController@submit',
-];
-```
+| 类型 | 说明 |
+|------|------|
+| **配置式路由** | 在 route/route.php 中定义 |
+| **自动路由** | 根据 URL 路径自动映射到控制器 |
 
 ## 2.3 控制器与请求/响应模块（对齐ThinkPHP，优化性能）
 
@@ -323,6 +310,278 @@ $db = Container::get('db');
 |部署难度|低（兼容两种部署方式）|低|中（需配置常驻服务）|
 
 总结：SwiftPHP 最终实现“ThinkPHP的易用性+Webman的高性能”，让开发者以极低的学习成本，开发出高性能的PHP应用，同时兼容现有生态，降低迁移和扩展成本。
+
+# 七、路由配置详解
+
+## 7.1 路由配置文件
+
+路由配置文件位于 `route/route.php`，使用 `Router` 类定义路由：
+
+```php
+<?php
+
+use SwiftPHP\Routing\Router;
+
+$router = new Router();
+
+// 基础路由
+$router->get('/', 'IndexController@index');
+
+return $router;
+```
+
+## 7.2 基础路由
+
+### HTTP 方法路由
+
+```php
+$router->get('/path', 'Controller@method');      // GET 请求
+$router->post('/path', 'Controller@method');    // POST 请求
+$router->put('/path', 'Controller@method');      // PUT 请求
+$router->delete('/path', 'Controller@method');   // DELETE 请求
+$router->patch('/path', 'Controller@method');    // PATCH 请求
+$router->options('/path', 'Controller@method');  // OPTIONS 请求
+```
+
+### 任意方法路由
+
+```php
+// 支持所有 HTTP 方法
+$router->any('/path', 'Controller@method');
+
+// 指定多个方法
+$router->match(['get', 'post'], '/path', 'Controller@method');
+```
+
+## 7.3 路径参数
+
+使用 `{参数名}` 语法定义路径参数：
+
+```php
+// 基础路径参数
+$router->get('/user/{id}', 'UserController@show');
+
+// 多个路径参数
+$router->get('/post/{id}/comment/{comment_id}', 'CommentController@show');
+
+// 可选参数（正则约束）
+$router->get('/user/{id}', 'UserController@show', [
+    'where' => ['id' => '[0-9]+']
+]);
+```
+
+控制器中获取参数：
+
+```php
+public function show(?Request $request = null): Response
+{
+    $id = $request->param('id');  // 获取路径参数
+    return $this->json(['id' => $id]);
+}
+```
+
+## 7.4 路由约束
+
+使用 `where` 选项添加正则约束：
+
+```php
+// 数字 ID
+$router->get('/user/{id}', 'UserController@show', [
+    'where' => ['id' => '[0-9]+']
+]);
+
+// 字母数字 slug
+$router->get('/post/{slug}', 'PostController@show', [
+    'where' => ['slug' => '[a-z0-9-]+']
+]);
+
+// 多个约束
+$router->get('/user/{id}/post/{slug}', 'UserPostController@show', [
+    'where' => [
+        'id' => '[0-9]+',
+        'slug' => '[a-z-]+'
+    ]
+]);
+```
+
+## 7.5 路由分组
+
+使用 `group()` 方法批量设置前缀和中间件：
+
+```php
+// 基础分组
+$router->group(['prefix' => '/api'], function ($router) {
+    $router->get('/users', 'UserController@index');
+    $router->get('/posts', 'PostController@index');
+});
+// 实际路径：/api/users, /api/posts
+
+// 带中间件的分组
+$router->group(['prefix' => '/admin', 'middleware' => ['admin']], function ($router) {
+    $router->get('/dashboard', 'AdminController@dashboard');
+    $router->get('/users', 'AdminController@users');
+});
+
+// 分组嵌套
+$router->group(['prefix' => '/api/v1'], function ($router) {
+    $router->group(['prefix' => '/users'], function ($router) {
+        $router->get('/', 'UserController@index');
+        $router->post('/', 'UserController@store');
+    });
+});
+```
+
+## 7.6 资源路由
+
+使用 `resource()` 方法快速生成 RESTful 路由：
+
+```php
+// 完整资源路由
+$router->resource('posts', 'PostController');
+
+// 生成以下路由：
+// GET    /posts           → index()
+// GET    /posts/create    → create()
+// POST   /posts           → store()
+// GET    /posts/{id}      → show()
+// GET    /posts/{id}/edit → edit()
+// PUT    /posts/{id}      → update()
+// DELETE /posts/{id}      → destroy()
+
+// 部分资源路由
+$router->resource('posts', 'PostController', [
+    'only' => ['index', 'show']  // 只生成这两个路由
+]);
+
+$router->resource('posts', 'PostController', [
+    'except' => ['edit', 'destroy']  // 排除这两个路由
+]);
+```
+
+## 7.7 路由命名
+
+使用 `as` 选项给路由起别名：
+
+```php
+$router->get('/dashboard', 'AdminController@dashboard', ['as' => 'admin.dashboard']);
+$router->get('/user/profile', 'UserController@profile', ['as' => 'user.profile']);
+```
+
+生成 URL：
+
+```php
+$url = $router->url('admin.dashboard');  // /dashboard
+$url = $router->url('user.profile');     // /user/profile
+```
+
+## 7.8 中间件配置
+
+中间件配置位于 `config/middleware.php`：
+
+```php
+<?php
+
+return [
+    // 全局中间件（所有路由都执行）
+    'global' => [\App\Middleware\Cors::class],
+
+    // 中间件分组
+    'groups' => [
+        'admin' => [\App\Middleware\Auth::class],
+        'api' => [\App\Middleware\ApiAuth::class, \App\Middleware\RateLimit::class],
+    ],
+
+    // 路径前缀自动匹配分组
+    'prefix' => [
+        '/admin' => 'admin',
+        '/api' => 'api',
+    ],
+
+    // 全局中间件生效路径（为空则所有路径生效）
+    'only' => ['/admin/*'],
+
+    // 全局中间件排除路径
+    'except' => ['/api/*', '/health'],
+
+    // 是否开启路由缓存（生产环境建议开启）
+    'cache' => true,
+];
+```
+
+## 7.9 自动路由
+
+无需配置，框架根据 URL 路径自动映射到控制器：
+
+| URL 路径 | 映射控制器 | 方法 |
+|----------|-----------|------|
+| `/` | `IndexController` | `index` |
+| `/user` | `UserController` | `user` |
+| `/user/profile` | `User\ProfileController` | `profile` |
+| `/api/v1/users` | `Api\V1\UsersController` | `users` |
+
+**规则**：
+- URL 路径转换为 `App\Controller\{Path}Controller`
+- 最后一个路径段作为方法名
+- 自动应用匹配的分组中间件
+
+## 7.10 路由缓存（生产环境）
+
+生产环境建议开启路由缓存以提升性能：
+
+```php
+// config/middleware.php
+return [
+    'cache' => true,  // 开启缓存
+];
+```
+
+缓存文件位于 `runtime/route_cache.php`。
+
+清除缓存：
+
+```php
+$router->clearCache();
+```
+
+## 7.11 完整示例
+
+```php
+<?php
+
+use SwiftPHP\Routing\Router;
+
+$router = new Router();
+
+// 主页
+$router->get('/', 'IndexController@index');
+
+// API v1 分组
+$router->group(['prefix' => '/api/v1', 'middleware' => ['api']], function ($router) {
+    // 用户相关
+    $router->get('/users', 'UserController@index');
+    $router->get('/users/{id}', 'UserController@show', [
+        'where' => ['id' => '[0-9]+']
+    ]);
+    $router->post('/users', 'UserController@store');
+    $router->put('/users/{id}', 'UserController@update', [
+        'where' => ['id' => '[0-9]+']
+    ]);
+    $router->delete('/users/{id}', 'UserController@destroy', [
+        'where' => ['id' => '[0-9]+']
+    ]);
+
+    // 文章相关（使用资源路由）
+    $router->resource('posts', 'PostController');
+});
+
+// 管理后台分组
+$router->group(['prefix' => '/admin', 'middleware' => ['admin']], function ($router) {
+    $router->get('/dashboard', 'AdminController@dashboard', ['as' => 'admin.dashboard']);
+    $router->resource('users', 'AdminUserController');
+});
+
+return $router;
+```
 
 # 六、测试路由
 1. GET  /              - 首页
