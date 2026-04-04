@@ -109,10 +109,30 @@ class Router
             }
 
             foreach ($routes as $pattern => $config) {
+                $method = 'GET';
+                $path = $pattern;
+                $options = [];
+
+                if (is_string($pattern) && preg_match('/^(GET|POST|PUT|DELETE|PATCH|OPTIONS|ANY)\s+\//i', $pattern)) {
+                    [$method, $path] = preg_split('/\s+/', $pattern, 2);
+                    $method = strtoupper($method);
+                }
+
                 if (is_array($config)) {
-                    $this->addRoute($pattern, $config['uses'] ?? '', $config['middleware'] ?? [], $config);
+                    $handler = $config['uses'] ?? '';
+                    $middleware = $config['middleware'] ?? [];
+                    $options = $config;
+                    if ($method === 'ANY') {
+                        $this->any($path, $handler, $options);
+                    } else {
+                        $this->addRoute($method, $path, $handler, $options);
+                    }
                 } else {
-                    $this->addRoute($pattern, $config);
+                    if ($method === 'ANY') {
+                        $this->any($path, $config);
+                    } else {
+                        $this->addRoute($method, $path, $config);
+                    }
                 }
             }
         }
