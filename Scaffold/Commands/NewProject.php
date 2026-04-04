@@ -221,25 +221,34 @@ PHP;
         $routeFile = <<<'PHP'
 <?php
 
-use SwiftPHP\Routing\Router;
+return [
+    'GET /' => 'App\Controller\IndexController@index',
+    'GET /hello' => 'App\Controller\IndexController@hello',
 
-$router = new Router();
+    'GET /api/v1/users' => 'App\Controller\UserController@index',
+    'GET /api/v1/users/{id}' => [
+        'uses' => 'App\Controller\UserController@show',
+        'where' => ['id' => '[0-9]+'],
+    ],
+    'GET /api/v1/posts' => [
+        'uses' => 'App\Controller\PostController@index',
+    ],
+    'GET /api/v1/posts/{id}' => [
+        'uses' => 'App\Controller\PostController@show',
+        'where' => ['id' => '[0-9]+'],
+    ],
 
-$router->group(['prefix' => '/api/v1'], function ($router) {
-    $router->get('/users', 'UserController@index');
-    $router->get('/users/{id}', 'UserController@show', ['where' => ['id' => '[0-9]+']]);
-    $router->resource('posts', 'PostController', ['only' => ['index', 'show']]);
-});
-
-$router->group(['prefix' => '/admin', 'middleware' => ['admin']], function ($router) {
-    $router->get('/dashboard', 'AdminController@dashboard', ['as' => 'admin.dashboard']);
-    $router->get('/users', 'AdminController@users', ['as' => 'admin.users']);
-});
-
-$router->get('/', 'IndexController@index');
-$router->get('/hello', 'IndexController@hello');
-
-return $router;
+    'GET /admin/dashboard' => [
+        'uses' => 'App\Controller\AdminController@dashboard',
+        'middleware' => ['admin'],
+        'as' => 'admin.dashboard',
+    ],
+    'GET /admin/users' => [
+        'uses' => 'App\Controller\AdminController@users',
+        'middleware' => ['admin'],
+        'as' => 'admin.users',
+    ],
+];
 PHP;
 
         file_put_contents($projectPath . '/route/route.php', $routeFile);
