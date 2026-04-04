@@ -153,7 +153,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use SwiftPHP\Server\SwiftServer;
 
 $server = new SwiftServer();
-$server->run();
+$server->start();
 PHP;
 
         file_put_contents($projectPath . '/start.php', $startPhp);
@@ -391,7 +391,7 @@ PHP;
         $commonFile = <<<'PHP'
 <?php
 
-function config(string $name = null, $default = null)
+function config(?string $name = null, $default = null)
 {
     static $config = [];
     static $loaded = [];
@@ -459,7 +459,7 @@ function env(string $key, $default = null)
     return $env[$key] ?? $default;
 }
 
-function app(string $class = null)
+function app(?string $class = null)
 {
     static $container = [];
 
@@ -472,6 +472,131 @@ function app(string $class = null)
     }
 
     return $container[$class];
+}
+
+function S(string $key, $value = null, ?int $expire = null)
+{
+    static $initialized = false;
+
+    if (!$initialized) {
+        $config = config('cache', ['default' => 'file', 'stores' => []]);
+        $storeConfig = $config['stores'][$config['default']] ?? ['type' => 'file', 'path' => 'runtime/cache/', 'expire' => 0];
+        \SwiftPHP\Cache\Cache::init([
+            'driver' => $storeConfig['type'] ?? 'file',
+            'path' => $storeConfig['path'] ?? 'runtime/cache/',
+            'expire' => $storeConfig['expire'] ?? 0,
+        ]);
+        $initialized = true;
+    }
+
+    if (func_num_args() === 1) {
+        return \SwiftPHP\Cache\Cache::get($key);
+    }
+
+    if ($value === null) {
+        return \SwiftPHP\Cache\Cache::delete($key);
+    }
+
+    return \SwiftPHP\Cache\Cache::set($key, $value, $expire ?? 0);
+}
+
+function I($name, $default = null, $filter = null)
+{
+    static $request = null;
+    if ($request === null) {
+        $request = \SwiftPHP\Request\Request::capture();
+    }
+
+    $type = 'param';
+    if (is_string($name) && strpos($name, '.') !== false) {
+        $parts = explode('.', $name, 2);
+        $type = $parts[0];
+        $name = $parts[1];
+    }
+
+    $value = null;
+    switch (strtolower($type)) {
+        case 'get':
+            $value = $_GET[$name] ?? null;
+            break;
+        case 'post':
+            $value = $_POST[$name] ?? null;
+            break;
+        case 'param':
+            $value = $request->get($name);
+            break;
+        case 'cookie':
+            $value = $_COOKIE[$name] ?? null;
+            break;
+        case 'server':
+            $value = $_SERVER[$name] ?? null;
+            break;
+        default:
+            $value = $request->get($name);
+    }
+
+    if ($value === null) {
+        return $default;
+    }
+
+    if ($filter !== null) {
+        $value = call_user_func($filter, $value);
+    }
+
+    return $value;
+}
+
+function F($name, $value = '')
+{
+    $dir = dirname(__DIR__) . '/runtime/data/';
+
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+
+    $file = $dir . $name . '.php';
+
+    if ($value === '') {
+        if (!is_file($file)) {
+            return null;
+        }
+        return include $file;
+    }
+
+    if (is_null($value)) {
+        return is_file($file) ? unlink($file) : true;
+    }
+
+    $content = "<?php\nreturn " . var_export($value, true) . ";\n";
+    return file_put_contents($file, $content);
+}
+
+function A($controller)
+{
+    $class = '\\app\\controller\\' . ucfirst($controller);
+    return class_exists($class) ? new $class : null;
+}
+
+function U(string $url, array $params = []): string
+{
+    $url = trim($url, '/');
+    $query = http_build_query($params);
+    return $params ? '/' . $url . '?' . $query : '/' . $url;
+}
+
+function G($start, $end = '')
+{
+    static $_time = [];
+    if ($end === '') {
+        $_time[$start] = microtime(true);
+    } else {
+        return number_format(($_time[$end] ?? microtime(true)) - $_time[$start], 6);
+    }
+}
+
+function E($msg)
+{
+    throw new \Exception($msg);
 }
 PHP;
 
