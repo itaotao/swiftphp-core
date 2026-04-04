@@ -109,6 +109,12 @@ class Request
         return $this->params[$name] ?? $default;
     }
 
+    public function setParam(string $name, $value): self
+    {
+        $this->params[$name] = $value;
+        return $this;
+    }
+
     public function header($name = null, $default = null)
     {
         if ($name === null) {

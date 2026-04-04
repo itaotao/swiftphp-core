@@ -221,18 +221,22 @@ PHP;
         $routeConfig = <<<'PHP'
 <?php
 
-return [
-    'default' => 'index',
-    'default_action' => 'index',
-    'url_route_on' => true,
-    'route_complete_match' => false,
-    'url_domain_deploy' => false,
-    'url_domain_root' => '',
-    'url_convert' => true,
-    'url_controller_layer' => 'controller',
-    'action_suffix' => '',
-    'url_param_type' => 0,
-];
+use SwiftPHP\Routing\Router;
+
+$router = new Router();
+
+$router->group(['prefix' => '/api/v1'], function ($router) {
+    $router->get('/users', 'UserController@index');
+    $router->get('/users/{id}', 'UserController@show', ['where' => ['id' => '[0-9]+']]);
+    $router->resource('posts', 'PostController', ['only' => ['index', 'show']]);
+});
+
+$router->group(['prefix' => '/admin', 'middleware' => ['admin']], function ($router) {
+    $router->get('/dashboard', 'AdminController@dashboard', ['as' => 'admin.dashboard']);
+    $router->get('/users', 'AdminController@users', ['as' => 'admin.users']);
+});
+
+return $router;
 PHP;
 
         file_put_contents($projectPath . '/config/route.php', $routeConfig);
@@ -241,9 +245,23 @@ PHP;
 <?php
 
 return [
-    'global' => [],
+    'global' => [\App\Middleware\Cors::class],
+
+    'groups' => [
+        'admin' => [\App\Middleware\Auth::class],
+        'api' => [\App\Middleware\ApiAuth::class],
+    ],
+
+    'prefix' => [
+        '/admin' => 'admin',
+        '/api' => 'api',
+    ],
+
     'only' => [],
+
     'except' => [],
+
+    'cache' => false,
 ];
 PHP;
 

@@ -77,12 +77,23 @@ class SwiftServer
         $rootPath = \SwiftPHP\Path\Path::getRootPath();
         require_once $rootPath . '/app/common.php';
 
+        // 预加载所有控制器
+        $controllerDir = $rootPath . '/app/controller/';
+        if (is_dir($controllerDir)) {
+            foreach (glob($controllerDir . '*.php') as $f) {
+                require_once $f;
+            }
+        }
+
+        error_log("initFramework: TestController exists=" . (class_exists("App\Controller\TestController") ? "YES" : "NO"));
+
         $debug = ($this->config['app']['debug'] ?? false);
         \SwiftPHP\Exception\Handler::init($debug);
     }
 
     public function handleRequest(TcpConnection $connection, $data): void
     {
+        file_put_contents("e:/Programs/swiftphp_demo/debug.log", "=== handleRequest called ===\n", FILE_APPEND);
         try {
             $rootPath = \SwiftPHP\Path\Path::getRootPath();
             $i18nConfig = [];
@@ -99,6 +110,13 @@ class SwiftServer
             \SwiftPHP\I18n\I18n::setLocale($detectedLocale);
 
             $router = new \SwiftPHP\Routing\Router();
+
+            $testClass = "TestController";
+            if (strpos($testClass, "\\") === false) {
+                $testClass = "App\\Controller\\" . $testClass;
+            }
+            error_log("SwiftServer: test class = $testClass, exists = " . (class_exists($testClass) ? "YES" : "NO"));
+
             $response = $router->dispatch($request);
 
             $connection->send($response);
