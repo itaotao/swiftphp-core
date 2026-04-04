@@ -218,7 +218,7 @@ PHP;
 
         file_put_contents($projectPath . '/config/database.php', $databaseConfig);
 
-        $routeConfig = <<<'PHP'
+        $routeFile = <<<'PHP'
 <?php
 
 use SwiftPHP\Routing\Router;
@@ -236,10 +236,13 @@ $router->group(['prefix' => '/admin', 'middleware' => ['admin']], function ($rou
     $router->get('/users', 'AdminController@users', ['as' => 'admin.users']);
 });
 
+$router->get('/', 'IndexController@index');
+$router->get('/hello', 'IndexController@hello');
+
 return $router;
 PHP;
 
-        file_put_contents($projectPath . '/config/route.php', $routeConfig);
+        file_put_contents($projectPath . '/route/route.php', $routeFile);
 
         $middlewareConfig = <<<'PHP'
 <?php
