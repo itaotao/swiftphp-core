@@ -477,21 +477,6 @@ PHP;
 
         file_put_contents($projectPath . '/app/common.php', $commonFile);
 
-        $routeFile = <<<'PHP'
-<?php
-
-use SwiftPHP\Routing\Router;
-
-$router = new Router();
-
-$router->get('/', 'IndexController@index');
-$router->get('/hello', 'IndexController@hello');
-
-return $router;
-PHP;
-
-        file_put_contents($projectPath . '/route/route.php', $routeFile);
-
         $indexController = <<<'PHP'
 <?php
 
@@ -728,7 +713,7 @@ ENV;
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "App\\\\": "app/"
         },
         "files": [
             "app/common.php"
